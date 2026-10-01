@@ -1,0 +1,30 @@
+name: digital-empire-content-pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      content_file:
+        description: "Path to an approved content package"
+        required: true
+        default: "content/2026-10-01-ai-automation-first-video.md"
+
+jobs:
+  validate-content-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate required sections
+        shell: bash
+        run: |
+          set -euo pipefail
+          f="${{ inputs.content_file }}"
+          test -f "$f"
+          grep -q "^# " "$f"
+          grep -q "^## Working title" "$f"
+          grep -q "^## Script draft" "$f"
+          grep -q "^## Production checklist" "$f"
+          echo "Content package validation passed: $f"
+
+# Publishing is intentionally NOT automated by this first version.
+# Add a separate authenticated publish job only after the final human
+# approval gate and the exact YouTube publishing connector/API are verified.
