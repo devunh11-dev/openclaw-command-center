@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "control_repository": "devunh11-dev/openclaw-command-center",
+  "policy": {
+    "preserve_source_repositories": true,
+    "copy_source_code_between_repositories": false,
+    "public_publishing_requires_human_approval": true,
+    "store_credentials_in_repository": false,
+    "unknown_status_means_unverified": true
+  },
+  "repositories": [
+    {
+      "repository": "devunh11-dev/openclaw-command-center",
+      "url": "https://github.com/devunh11-dev/openclaw-command-center",
+      "default_branch": "main",
+      "role": "central-control-plane",
+      "verification": "verified",
+      "evidence": "Repository metadata and main-branch workflow/files were read during the integration audit."
+    },
+    {
+      "repository": "devunh11-dev/ooenclaw-discord",
+      "url": "https://github.com/devunh11-dev/ooenclaw-discord",
+      "default_branch": "main",
+      "role": "discord-integration-candidate",
+      "verification": "repository-exists; purpose-and-workflows-not-yet-audited"
+    },
+    {
+      "repository": "devunh11-dev/Genius-discord-bot",
+      "url": "https://github.com/devunh11-dev/Genius-discord-bot",
+      "default_branch": "main",
+      "role": "discord-bot-integration-candidate",
+      "verification": "repository-exists; purpose-and-workflows-not-yet-audited"
+    }
+  ],
+  "pipeline_stages": [
+    {
+      "id": "research",
+      "purpose": "Collect source-backed ideas and store source URLs",
+      "publishes_publicly": false
+    },
+    {
+      "id": "content-package",
+      "purpose": "Create script and production package; validate required sections",
+      "publishes_publicly": false
+    },
+    {
+      "id": "asset-drafts",
+      "purpose": "Prepare video, thumbnail, and platform-specific caption checklist",
+      "publishes_publicly": false
+    },
+    {
+      "id": "human-approval",
+      "purpose": "Require explicit review before any public distribution",
+      "publishes_publicly": false
+    },
+    {
+      "id": "distribution",
+      "purpose": "Use only verified provider connections after approval",
+      "publishes_publicly": true,
+      "enabled": false,
+      "reason": "Publishing remains disabled until provider authentication and approval gates are tested."
+    },
+    {
+      "id": "analytics-feedback",
+      "purpose": "Record only provider-returned metrics and feed verified findings into research",
+      "publishes_publicly": false
+    }
+  ],
+  "integration_rules": [
+    "Use least-privilege credentials stored in GitHub Actions secrets or provider secret stores, never in Git or Notion.",
+    "Use reusable workflows or repository_dispatch only after the receiving repository and permissions are verified.",
+    "Use idempotent job identifiers and record run URLs and outcomes.",
+    "Do not auto-merge pull requests or modify repository permissions automatically.",
+    "Do not treat a listed repository as connected until its workflow and required access have been tested."
+  ]
+}
