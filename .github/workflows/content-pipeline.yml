@@ -1,30 +1,58 @@
 name: digital-empire-content-pipeline
 
 on:
+  push:
+    paths:
+      - "content/*.md"
+      - "content/**/*.md"
+  pull_request:
+    paths:
+      - "content/*.md"
+      - "content/**/*.md"
   workflow_dispatch:
     inputs:
       content_file:
-        description: "Path to an approved content package"
-        required: true
-        default: "content/2026-10-01-ai-automation-first-video.md"
+        description: "Optional path to one content package to validate"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
 
 jobs:
   validate-content-package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate required sections
+      - name: Validate content packages
         shell: bash
+        env:
+          CONTENT_FILE: ${{ inputs.content_file }}
         run: |
           set -euo pipefail
-          f="${{ inputs.content_file }}"
-          test -f "$f"
-          grep -q "^# " "$f"
-          grep -q "^## Working title" "$f"
-          grep -q "^## Script draft" "$f"
-          grep -q "^## Production checklist" "$f"
-          echo "Content package validation passed: $f"
 
-# Publishing is intentionally NOT automated by this first version.
-# Add a separate authenticated publish job only after the final human
-# approval gate and the exact YouTube publishing connector/API are verified.
+          validate_file() {
+            local f="$1"
+            test -f "$f"
+            grep -q "^# " "$f"
+            grep -q "^## Working title" "$f"
+            grep -q "^## Script draft" "$f"
+            grep -q "^## Production checklist" "$f"
+            echo "Content package validation passed: $f"
+          }
+
+          if [[ -n "${CONTENT_FILE:-}" ]]; then
+            validate_file "$CONTENT_FILE"
+          else
+            mapfile -t files < <(find content -type f -name '*.md' -print | sort)
+            if (("${#files[@]}" == 0)); then
+              echo "No content packages found; nothing to validate."
+              exit 0
+            fi
+            for f in "${files[@]}"; do
+              validate_file "$f"
+            done
+          fi
+
+# This workflow validates drafts automatically on content changes.
+# Publishing, scheduling, and paid services remain approval-gated.
