@@ -45,6 +45,8 @@ Google quotas and service limits can change. The sample searches a maximum of 50
 - “Your inbox is where enquiries arrive. It does not have to be where your follow-ups disappear.”
 - “You can organize creator enquiries with Gmail, Sheets, and a small script—without paying for an AI API.”
 
+## Script draft
+
 ## Full script — target 5:50–6:10
 
 ### 0:00–0:25 — Cold open
@@ -541,6 +543,8 @@ Do not show a pile of confirmed sponsor deals, revenue figures, or fake inbox vo
 - Use distinct scenes; do not simply crop the flagship into two identical clips.
 - Short 1 is the workflow transformation.
 - Short 2 is the data-minimization and human-review lesson.
+
+## Production checklist
 
 ## Quality-control checklist
 
